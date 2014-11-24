@@ -17,7 +17,14 @@ namespace DevelopmentWithADot.Interception
 
 		public void Proceed()
 		{
-			this.Result = this.Method.Invoke(this.Instance, this.Arguments);
+			try
+			{
+				this.Result = this.Method.Invoke(this.Instance, this.Arguments);
+			}
+			catch (Exception ex)
+			{
+				this.Exception = ex;
+			}
 		}
 
 		public Object Instance
@@ -55,6 +62,12 @@ namespace DevelopmentWithADot.Interception
 				this.result = value;
 				this.Handled = true;
 			}
+		}
+
+		public Exception Exception
+		{
+			get;
+			private set;
 		}
 	}
 }

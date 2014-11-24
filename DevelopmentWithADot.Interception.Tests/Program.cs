@@ -1,59 +1,27 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Hosting;
 
 namespace DevelopmentWithADot.Interception.Tests
 {
-	abstract class BaseContextBoundObject : ContextBoundObject, IMyType
-	{
-		public abstract int MyMethod();
-
-		public abstract string MyProperty { get; set; }
-	}
-
-	[InterceptionProxy]
-	class Sample1 : BaseContextBoundObject
+	[InterceptionContext(typeof(MyHandler))]
+	class Sample : ContextBoundObject, IMyType
 	{
 		#region IMyType Members
 
-		public override int MyMethod()
+		public Int32 MyMethod()
 		{
 			return (0);
 		}
 
-		public override string MyProperty
+		public String MyProperty
 		{
-			get
-			{
-				return ("");
-			}
-			set
-			{
-			}
+			get;
+			set;
 		}
 	}
-		
-	[InterceptionContext]
-	class Sample2 : BaseContextBoundObject
-	{
-		#region IMyType Members
 
-		public override int MyMethod()
-		{
-			return (0);
-		}
-
-		public override string MyProperty
-		{
-			get
-			{
-				return ("");
-			}
-			set
-			{
-			}
-		}
-
-		#endregion
-	}
 	#endregion
 
 	public interface IMyType
@@ -108,6 +76,8 @@ namespace DevelopmentWithADot.Interception.Tests
 
 		public void Invoke(InterceptionArgs arg)
 		{
+			Console.WriteLine("Returning 20");
+
 			arg.Result = 20;
 		}
 
@@ -116,40 +86,59 @@ namespace DevelopmentWithADot.Interception.Tests
 
 	class Program
 	{
+		static T RunTest<T>(IInstanceInterceptor interceptor, T instance) where T : class
+		{
+			var type = typeof (T);
+			var canIntercept = interceptor.CanIntercept(instance);
+			var interceptableMethods = interceptor.GetInterceptableMethods(type);
+			Console.WriteLine("Can intercept: {0}\tInterceptable methods: {1}", canIntercept, String.Join(", ", interceptableMethods));
+			var myProxy = interceptor.Intercept(instance, type, new MyHandler()) as T;
+			var proxy = myProxy as IInterceptionProxy;
+			if (proxy != null)
+			{
+				var otherInterceptor = proxy.Interceptor;
+			}
+			return (myProxy);
+		}
+
+		static T RunTest<T>(ITypeInterceptor interceptor) where T : class
+		{
+			var type = typeof (T);
+			var canIntercept = interceptor.CanIntercept(type);
+			var interceptableMethods = interceptor.GetInterceptableMethods(type);
+			Console.WriteLine("Can intercept: {0}\tInterceptable methods: {1}", canIntercept, String.Join(", ", interceptableMethods));
+			var myProxyType = interceptor.Intercept<T>(typeof(MyHandler));
+			var myProxy = Activator.CreateInstance(myProxyType) as T;
+			var proxy = myProxy as IInterceptionProxy;
+			var otherInterceptor = proxy.Interceptor;
+			return (myProxy);
+		}
+
 		static void Main(String[] args)
 		{
 			{
-				Sample2 s2 = new Sample2();
-				s2.MyMethod();
-
-				return;
+				var myProxy = RunTest<MyType>(new VirtualMethodInterceptor());
+				var result = myProxy.MyMethod();
 			}
 
 			{
-				InstanceInterceptor interceptor = new InterfaceInterceptor();
-				IMyType myInstance = new MyType();
-				IMyType myProxy = interceptor.Intercept(myInstance, typeof(IMyType), new MyHandler()) as IMyType;
-				IProxy proxy = myProxy as IProxy;
-				Interceptor otherInterceptor = proxy.Interceptor;
-				Int32 result = myProxy.MyMethod();
+				var myProxy = RunTest<IMyType>(new InterfaceInterceptor(), new MyType());
+				var result = myProxy.MyMethod();
 			}
 
 			{
-				TypeInterceptor interceptor = new VirtualMethodInterceptor();
-				Type myProxyType = interceptor.Intercept(typeof(MyType), typeof(MyHandler));
-				MyType myProxy = Activator.CreateInstance(myProxyType) as MyType;
-				IProxy proxy = myProxy as IProxy;
-				Interceptor otherInterceptor = proxy.Interceptor;
-				Int32 result = myProxy.MyMethod();
+				var myProxy = RunTest<IMyType>(new TransparentProxyInterceptor(), new MyType());
+				var result = myProxy.MyMethod();
 			}
 
 			{
-				InstanceInterceptor interceptor = new TransparentProxyInterceptor();
-				IMyType myInstance = new MyType();
-				IMyType myProxy = interceptor.Intercept(myInstance, new MyHandler());
-				IProxy proxy = myProxy as IProxy;
-				Interceptor otherInterceptor = proxy.Interceptor;
-				Int32 result = myProxy.MyMethod();
+				var myProxy = RunTest<IMyType>(new ContextBoundObjectInterceptor(), new Sample());
+				var result = myProxy.MyMethod();
+			}
+
+			{
+				var myProxy = new Sample().Intercept(new MyHandler());
+				var result = myProxy.MyMethod();
 			}
 		}
 	}

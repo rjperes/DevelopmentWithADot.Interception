@@ -5,12 +5,12 @@ namespace DevelopmentWithADot.Interception
 {
 	public static class InstanceInterceptorExtensions
 	{
-		public static Object Intercept(this InstanceInterceptor interceptor, Object instance, IInterceptionHandler handler)
+		public static Object Intercept(this IInstanceInterceptor interceptor, Object instance, IInterceptionHandler handler)
 		{
 			return (interceptor.Intercept(instance, instance.GetType().GetInterfaces().First(), handler));
 		}
 
-		public static T Intercept<T>(this InstanceInterceptor interceptor, T instance, IInterceptionHandler handler)
+		public static T Intercept<T>(this IInstanceInterceptor interceptor, T instance, IInterceptionHandler handler) where T : class
 		{
 			return ((T)interceptor.Intercept((Object)instance, typeof(T), handler));
 		}

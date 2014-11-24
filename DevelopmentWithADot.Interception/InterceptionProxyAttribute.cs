@@ -9,9 +9,16 @@ namespace DevelopmentWithADot.Interception
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public sealed class InterceptionProxyAttribute : ProxyAttribute
 	{
+		private readonly Type interceptionHandler;
+
+		public InterceptionProxyAttribute(Type interceptionHandler)
+		{
+			this.interceptionHandler = interceptionHandler;
+		}
+
 		public override RealProxy CreateProxy(ObjRef objRef, Type serverType, Object serverObject, Context serverContext)
 		{
-			RealProxy proxy = new InterceptionRealProxy(serverType);
+			var proxy = new InterceptionRealProxy(serverType);
 
 			if (serverContext != null)
 			{

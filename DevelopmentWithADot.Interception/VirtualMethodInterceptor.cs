@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace DevelopmentWithADot.Interception
 {
-	public sealed class VirtualMethodInterceptor : TypeInterceptor
+	public sealed class VirtualMethodInterceptor : Interceptor, ITypeInterceptor
 	{
 		private static readonly InterceptedTypeGenerator generator = new CodeDOMInterceptedTypeGenerator();
 
@@ -11,7 +14,12 @@ namespace DevelopmentWithADot.Interception
 			return (generator.Generate(this, typeToIntercept, handlerType));
 		}
 
-		public override Type Intercept(Type typeToIntercept, Type handlerType)
+		public override IEnumerable<MethodInfo> GetInterceptableMethods(Type type)
+		{
+			return (type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.IsAbstract == true) || (x.IsVirtual == true)));
+		}
+
+		public Type Intercept(Type typeToIntercept, Type handlerType)
 		{
 			if (typeToIntercept == null)
 			{
@@ -51,7 +59,7 @@ namespace DevelopmentWithADot.Interception
 			return (this.CreateType(typeToIntercept, handlerType));
 		}
 
-		public override Boolean CanIntercept(Type typeToIntercept)
+		public Boolean CanIntercept(Type typeToIntercept)
 		{
 			return ((typeToIntercept.IsInterface == false) && (typeToIntercept.IsSealed == false));
 		}

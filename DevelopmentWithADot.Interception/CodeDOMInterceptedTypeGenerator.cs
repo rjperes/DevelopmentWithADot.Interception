@@ -14,10 +14,10 @@ namespace DevelopmentWithADot.Interception
 	{
 		private static readonly CodeDomProvider provider = new CSharpCodeProvider();
 		private static readonly CodeGeneratorOptions options = new CodeGeneratorOptions() { BracingStyle = "C" };
-		private static readonly CodeTypeReference proxyTypeReference = new CodeTypeReference(typeof(IProxy));
+		private static readonly CodeTypeReference proxyTypeReference = new CodeTypeReference(typeof(IInterceptionProxy));
 		private static readonly CodeTypeReference interceptorTypeReference = new CodeTypeReference(typeof(Interceptor));
 		private static readonly CodeTypeReference handlerTypeReference = new CodeTypeReference(typeof(IInterceptionHandler));
-		private static readonly Assembly proxyAssembly = typeof(IProxy).Assembly;
+		private static readonly Assembly proxyAssembly = typeof(IInterceptionProxy).Assembly;
 		private static readonly Type interfaceProxyType = typeof(InterfaceProxy);
 
 		protected virtual void GenerateConstructors(CodeTypeDeclaration targetClass, Type baseType, IEnumerable<ConstructorInfo> constructors)

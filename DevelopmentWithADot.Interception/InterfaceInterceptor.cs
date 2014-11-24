@@ -38,9 +38,9 @@ namespace DevelopmentWithADot.Interception
 				throw (new ArgumentNullException("instance"));
 			}
 
-			Type interfaceProxy = generator.Generate(this, typeof(InterfaceProxy), null, typeToIntercept);
+			var interfaceProxy = generator.Generate(this, typeof(InterfaceProxy), null, typeToIntercept);
 
-			Object newInstance = Activator.CreateInstance(interfaceProxy, this, handler, instance);
+			var newInstance = Activator.CreateInstance(interfaceProxy, this, handler, instance);
 
 			return (newInstance);
 		}

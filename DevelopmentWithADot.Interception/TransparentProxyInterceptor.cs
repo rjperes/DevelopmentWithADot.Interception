@@ -31,7 +31,7 @@ namespace DevelopmentWithADot.Interception
 				throw (new ArgumentException("typeToIntercept"));
 			}
 
-			TransparentProxy proxy = new TransparentProxy(this, instance, typeToIntercept, handler);
+			var proxy = new TransparentProxy(this, instance, typeToIntercept, handler);
 
 			return (proxy.GetTransparentProxy());
 		}

@@ -1,7 +1,7 @@
 ﻿
 namespace DevelopmentWithADot.Interception
 {
-	public interface IProxy
+	public interface IInterceptionProxy
 	{
 		Interceptor Interceptor
 		{

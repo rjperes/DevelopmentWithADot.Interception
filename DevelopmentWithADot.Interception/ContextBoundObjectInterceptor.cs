@@ -4,12 +4,37 @@ using System.Collections.Generic;
 
 namespace DevelopmentWithADot.Interception
 {
-	public class ContextBoundObjectInterceptor : InstanceInterceptor
+	public sealed class ContextBoundObjectInterceptor : InstanceInterceptor
 	{
-		internal static IDictionary<Object, IInterceptionHandler> interceptors = new ConcurrentDictionary<Object, IInterceptionHandler>();
+		internal static readonly IDictionary<Object, IInterceptionHandler> interceptors = new ConcurrentDictionary<Object, IInterceptionHandler>();
 
 		public override Object Intercept(Object instance, Type typeToIntercept, IInterceptionHandler handler)
 		{
+			if (instance == null)
+			{
+				throw (new ArgumentNullException("instance"));
+			}
+
+			if (typeToIntercept == null)
+			{
+				throw (new ArgumentNullException("typeToIntercept"));
+			}
+
+			if (handler == null)
+			{
+				throw (new ArgumentNullException("handler"));
+			}
+
+			if (this.CanIntercept(instance) == false)
+			{
+				throw (new ArgumentException("instance"));
+			}
+
+			if (typeToIntercept.IsAssignableFrom(instance.GetType()) == false)
+			{
+				throw (new ArgumentException("typeToIntercept"));
+			}
+
 			interceptors[instance] = handler;
 
 			return (instance);
@@ -17,7 +42,7 @@ namespace DevelopmentWithADot.Interception
 
 		public override Boolean CanIntercept(Object instance)
 		{
-			return ((instance is ContextBoundObject) && ((Attribute.IsDefined(instance.GetType(), typeof(InterceptionProxyAttribute))) || (Attribute.IsDefined(instance.GetType(), typeof(InterceptionContextAttribute)))));
+			return ((instance is ContextBoundObject) && (Attribute.IsDefined(instance.GetType(), typeof(InterceptionContextAttribute))));
 		}
 	}
 }

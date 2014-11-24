@@ -49,16 +49,21 @@
     <Compile Include="CodeDOMInterceptedTypeGenerator.cs" />
     <Compile Include="ContextBoundObjectInterceptor.cs" />
     <Compile Include="EventInterceptionHandler.cs" />
+    <Compile Include="IInterceptor.cs" />
+    <Compile Include="InstanceInterceptor.cs" />
     <Compile Include="InstanceInterceptorExtensions.cs" />
     <Compile Include="InterceptionArgs.cs" />
     <Compile Include="InterceptionContextAttribute.cs" />
+    <Compile Include="InterceptionExtensions.cs" />
     <Compile Include="InterceptionMessageSink.cs" />
+    <Compile Include="InterceptionProperty.cs" />
     <Compile Include="InterceptionProxyAttribute.cs" />
     <Compile Include="InterceptionRealProxy.cs" />
+    <Compile Include="InterceptionReturnMessage.cs" />
     <Compile Include="InterfaceProxy.cs" />
-    <Compile Include="IProxy.cs" />
+    <Compile Include="IInterceptionProxy.cs" />
     <Compile Include="IInterceptionHandler.cs" />
-    <Compile Include="InstanceInterceptor.cs" />
+    <Compile Include="IInstanceInterceptor.cs" />
     <Compile Include="Interceptor.cs" />
     <Compile Include="InterfaceInterceptor.cs" />
     <Compile Include="MultiInterceptionHandler.cs" />
@@ -66,7 +71,7 @@
     <Compile Include="TransparentProxy.cs" />
     <Compile Include="TransparentProxyInterceptor.cs" />
     <Compile Include="InterceptedTypeGenerator.cs" />
-    <Compile Include="TypeInterceptor.cs" />
+    <Compile Include="ITypeInterceptor.cs" />
     <Compile Include="TypeInterceptorExtensions.cs" />
     <Compile Include="VirtualMethodInterceptor.cs" />
   </ItemGroup>

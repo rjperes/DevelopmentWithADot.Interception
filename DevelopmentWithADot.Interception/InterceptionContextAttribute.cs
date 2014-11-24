@@ -1,37 +1,23 @@
 ﻿using System;
+using System.Runtime.Remoting.Activation;
 using System.Runtime.Remoting.Contexts;
-using System.Runtime.Remoting.Messaging;
 
 namespace DevelopmentWithADot.Interception
 {
-	using System.Runtime.Remoting.Activation;
-
 	[Serializable]
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-	public sealed class InterceptionContextAttribute : ContextAttribute, IContributeClientContextSink, IContributeServerContextSink, IContributeObjectSink
+	public sealed class InterceptionContextAttribute : ContextAttribute
 	{
-		public InterceptionContextAttribute() : base("InterceptionContext")
+		private readonly Type handlerType;
+
+		public override void GetPropertiesForNewContext(IConstructionCallMessage msg)
 		{
+			msg.ContextProperties.Add(new InterceptionProperty(this.handlerType, msg.LogicalCallContext, msg.Properties));
 		}
 
-		public override Boolean IsContextOK(Context ctx, IConstructionCallMessage ctorMsg)
+		public InterceptionContextAttribute(Type handlerType) : base("InterceptionContext")
 		{
-			return (base.IsContextOK(ctx, ctorMsg));
-		}
-
-		public IMessageSink GetClientContextSink(IMessageSink nextSink)
-		{
-			return (new InterceptionMessageSink(nextSink));
-		}
-
-		public IMessageSink GetServerContextSink(IMessageSink nextSink)
-		{
-			return (new InterceptionMessageSink(nextSink));
-		}
-
-		public IMessageSink GetObjectSink(MarshalByRefObject obj, IMessageSink nextSink)
-		{
-			return (new InterceptionMessageSink(nextSink));
+			this.handlerType = handlerType;
 		}
 	}
 }

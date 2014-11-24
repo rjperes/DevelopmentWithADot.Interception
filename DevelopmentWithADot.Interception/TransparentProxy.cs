@@ -45,7 +45,7 @@ namespace DevelopmentWithADot.Interception
 						}
 						else
 						{
-							if ((methodName == "get_Interceptor") && (typeName == typeof(IProxy).AssemblyQualifiedName))
+							if ((methodName == "get_Interceptor") && (typeName == typeof(IInterceptionProxy).AssemblyQualifiedName))
 							{
 								return (new ReturnMessage(this.interceptor, null, 0, null, msg as IMethodCallMessage));
 							}
@@ -87,7 +87,7 @@ namespace DevelopmentWithADot.Interception
 
 		Boolean IRemotingTypeInfo.CanCastTo(Type fromType, Object o)
 		{
-			return (fromType == typeof(IProxy));
+			return (fromType == typeof(IInterceptionProxy));
 		}
 
 		String IRemotingTypeInfo.TypeName
