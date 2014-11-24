@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 
 namespace DevelopmentWithADot.Interception
 {
@@ -30,7 +31,7 @@ namespace DevelopmentWithADot.Interception
 				throw (new ArgumentException("instance"));
 			}
 
-			if (typeToIntercept.IsAssignableFrom(instance.GetType()) == false)
+			if (typeToIntercept.IsInstanceOfType(instance) == false)
 			{
 				throw (new ArgumentException("typeToIntercept"));
 			}

@@ -8,17 +8,17 @@ namespace DevelopmentWithADot.Interception
 {
 	sealed class InterceptionMessageSink : IMessageSink
 	{
-		private readonly Type handleType;
-		private readonly Object instance;
+		private readonly Type handlerType;
+		private readonly MarshalByRefObject instance;
 		private readonly LogicalCallContext context;
 		private readonly IDictionary properties;
 
-		public InterceptionMessageSink(Object instance, Type handlerType, LogicalCallContext context, IDictionary properties, IMessageSink next)
+		public InterceptionMessageSink(MarshalByRefObject instance, Type handlerType, LogicalCallContext context, IDictionary properties, IMessageSink next)
 		{
 			this.context = context;
 			this.properties = properties;
 			this.instance = instance;
-			this.handleType = handlerType;
+			this.handlerType = handlerType;
 			this.NextSink = next;
 		}
 
@@ -30,12 +30,6 @@ namespace DevelopmentWithADot.Interception
 
 		public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink)
 		{
-			if (!(msg is IConstructionCallMessage) && (msg is IMethodCallMessage))
-			{
-				var mcm = msg as IMethodCallMessage;
-				var handler = this.GetHandler();
-			}
-
 			return (this.NextSink.AsyncProcessMessage(msg, replySink));
 		}
 
@@ -53,7 +47,6 @@ namespace DevelopmentWithADot.Interception
 				{
 					return (new InterceptionReturnMessage(args, this.context, this.properties));
 				}
-
 			}
 
 			return (this.NextSink.SyncProcessMessage(msg));
@@ -61,7 +54,12 @@ namespace DevelopmentWithADot.Interception
 
 		private IInterceptionHandler GetHandler()
 		{
-			var handler = Activator.CreateInstance(this.handleType) as IInterceptionHandler;
+			var handler = null as IInterceptionHandler;
+
+			if (ContextBoundObjectInterceptor.interceptors.TryGetValue(this.instance, out handler) == false)
+			{
+				handler = Activator.CreateInstance(this.handlerType) as IInterceptionHandler;
+			}
 
 			return (handler);
 		}

@@ -23,7 +23,7 @@ namespace DevelopmentWithADot.Interception
 				throw (new ArgumentNullException("handler"));
 			}
 
-			if (typeToIntercept.IsAssignableFrom(instance.GetType()) == false)
+			if (typeToIntercept.IsInstanceOfType(instance) == false)
 			{
 				throw (new ArgumentNullException("instance"));
 			}

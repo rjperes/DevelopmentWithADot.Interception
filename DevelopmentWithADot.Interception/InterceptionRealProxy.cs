@@ -4,7 +4,7 @@ using System.Runtime.Remoting.Proxies;
 
 namespace DevelopmentWithADot.Interception
 {
-	internal sealed class InterceptionRealProxy : RealProxy, IProxy
+	internal sealed class InterceptionRealProxy : RealProxy, IInterceptionProxy
 	{
 		private readonly Interceptor interceptor;
 

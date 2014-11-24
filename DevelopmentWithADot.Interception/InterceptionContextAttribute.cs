@@ -10,14 +10,18 @@ namespace DevelopmentWithADot.Interception
 	{
 		private readonly Type handlerType;
 
-		public override void GetPropertiesForNewContext(IConstructionCallMessage msg)
-		{
-			msg.ContextProperties.Add(new InterceptionProperty(this.handlerType, msg.LogicalCallContext, msg.Properties));
-		}
-
 		public InterceptionContextAttribute(Type handlerType) : base("InterceptionContext")
 		{
 			this.handlerType = handlerType;
+		}
+
+		public InterceptionContextAttribute() : this(null)
+		{
+		}
+
+		public override void GetPropertiesForNewContext(IConstructionCallMessage msg)
+		{
+			msg.ContextProperties.Add(new InterceptionProperty(this.handlerType, msg.LogicalCallContext, msg.Properties));
 		}
 	}
 }

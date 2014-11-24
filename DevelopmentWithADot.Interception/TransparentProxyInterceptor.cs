@@ -26,7 +26,7 @@ namespace DevelopmentWithADot.Interception
 				throw (new ArgumentException("instance"));
 			}
 
-			if (typeToIntercept.IsAssignableFrom(instance.GetType()) == false)
+			if (typeToIntercept.IsInstanceOfType(instance) == false)
 			{
 				throw (new ArgumentException("typeToIntercept"));
 			}
