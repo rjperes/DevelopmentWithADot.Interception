@@ -22,14 +22,13 @@ namespace DevelopmentWithADot.Interception
 
 		protected virtual void GenerateConstructors(CodeTypeDeclaration targetClass, Type baseType, IEnumerable<ConstructorInfo> constructors)
 		{
-			foreach (ConstructorInfo constructor in constructors)
+			foreach (var constructor in constructors)
 			{
-				CodeConstructor c = new CodeConstructor();
+				var c = new CodeConstructor();
+				c.Attributes = MemberAttributes.Final;
 				targetClass.Members.Add(c);
 
-				c.Attributes = MemberAttributes.Final;
-
-				foreach (ParameterInfo parameter in constructor.GetParameters())
+				foreach (var parameter in constructor.GetParameters())
 				{
 					c.Parameters.Add(new CodeParameterDeclarationExpression(parameter.ParameterType, parameter.Name));
 				}
@@ -58,7 +57,7 @@ namespace DevelopmentWithADot.Interception
 					}
 				}
 
-				foreach (ParameterInfo p in constructor.GetParameters())
+				foreach (var p in constructor.GetParameters())
 				{
 					c.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression(p.Name));
 				}
@@ -69,9 +68,9 @@ namespace DevelopmentWithADot.Interception
 		{
 			if (methods.Any() == true)
 			{
-				MethodInfo finalizeMethod = methods.First().DeclaringType.GetMethod("Finalize", BindingFlags.NonPublic | BindingFlags.Instance);
+				var finalizeMethod = methods.First().DeclaringType.GetMethod("Finalize", BindingFlags.NonPublic | BindingFlags.Instance);
 
-				foreach (MethodInfo method in methods)
+				foreach (var method in methods)
 				{
 					if (method == finalizeMethod)
 					{
@@ -83,7 +82,7 @@ namespace DevelopmentWithADot.Interception
 						continue;
 					}
 
-					CodeMemberMethod m = new CodeMemberMethod();
+					var m = new CodeMemberMethod();
 					m.Name = method.Name;
 					m.ReturnType = new CodeTypeReference(method.ReturnType);
 
@@ -94,7 +93,7 @@ namespace DevelopmentWithADot.Interception
 
 					targetClass.Members.Add(m);
 
-					foreach (ParameterInfo parameter in method.GetParameters())
+					foreach (var parameter in method.GetParameters())
 					{
 						m.Parameters.Add(new CodeParameterDeclarationExpression(parameter.ParameterType, parameter.Name));
 					}
@@ -121,16 +120,16 @@ namespace DevelopmentWithADot.Interception
 						m.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					}
 
-					CodeExpression[] ps = new CodeExpression[] { new CodeThisReferenceExpression(), new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod"))) }.Concat(method.GetParameters().Select(x => new CodeVariableReferenceExpression(x.Name))).ToArray();
-					CodeVariableDeclarationStatement arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
+					var ps = new CodeExpression[] { new CodeThisReferenceExpression(), new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod"))) }.Concat(method.GetParameters().Select(x => new CodeVariableReferenceExpression(x.Name))).ToArray();
+					var arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
 
 					m.Statements.Add(arg);
 
-					CodeMethodInvokeExpression handler = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "handler"), "Invoke"), new CodeVariableReferenceExpression("args"));
+					var handler = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "handler"), "Invoke"), new CodeVariableReferenceExpression("args"));
 					m.Statements.Add(handler);
 
-					CodeBinaryOperatorExpression comparison = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Handled"), CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(method.ReturnType != typeof(void)));
-					CodeConditionStatement @if = null;
+					var comparison = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Handled"), CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(method.ReturnType != typeof(void)));
+					var @if = null as CodeConditionStatement;
 
 					if (method.ReturnType != typeof(void))
 					{
@@ -171,16 +170,16 @@ namespace DevelopmentWithADot.Interception
 
 		protected virtual void GenerateProperties(CodeTypeDeclaration targetClass, Type baseType, IEnumerable<PropertyInfo> properties)
 		{
-			CodeMemberProperty interceptorProperty = new CodeMemberProperty();
+			var interceptorProperty = new CodeMemberProperty();
 			interceptorProperty.Name = "Interceptor";
 			interceptorProperty.Type = interceptorTypeReference;
 			interceptorProperty.PrivateImplementationType = proxyTypeReference;
 			interceptorProperty.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "interceptor")));
 			targetClass.Members.Add(interceptorProperty);
 
-			foreach (PropertyInfo property in properties)
+			foreach (var property in properties)
 			{
-				CodeMemberProperty p = new CodeMemberProperty();
+				var p = new CodeMemberProperty();
 				p.Name = property.Name;
 				p.Type = new CodeTypeReference(property.PropertyType);
 
@@ -217,21 +216,21 @@ namespace DevelopmentWithADot.Interception
 						p.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					}
 
-					CodeExpression[] ps = new CodeExpression[]
+					var ps = new CodeExpression[]
 					{
 						new CodeThisReferenceExpression(),
 						new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod")))
 					};
-					
-					CodeVariableDeclarationStatement arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
+
+					var arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
 
 					p.GetStatements.Add(arg);
 
-					CodeMethodInvokeExpression handler = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "handler"), "Invoke"), new CodeVariableReferenceExpression("args"));
+					var handler = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "handler"), "Invoke"), new CodeVariableReferenceExpression("args"));
 					p.GetStatements.Add(handler);
 
-					CodeBinaryOperatorExpression comparison = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Handled"), CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(true));
-					CodeConditionStatement @if = new CodeConditionStatement(comparison, new CodeMethodReturnStatement(new CodeCastExpression(property.PropertyType, new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Result"))));
+					var comparison = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Handled"), CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(true));
+					var @if = new CodeConditionStatement(comparison, new CodeMethodReturnStatement(new CodeCastExpression(property.PropertyType, new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Result"))));
 
 					p.GetStatements.Add(@if);
 
@@ -249,22 +248,22 @@ namespace DevelopmentWithADot.Interception
 				{
 					p.HasSet = true;
 
-					CodeExpression[] ps = new CodeExpression[]
+					var ps = new CodeExpression[]
 					{
 						new CodeThisReferenceExpression(),
 						new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod"))),
 						new CodeVariableReferenceExpression("value")
 					};
 
-					CodeVariableDeclarationStatement arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
+					var arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
 
 					p.SetStatements.Add(arg);
 
-					CodeMethodInvokeExpression handler = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "handler"), "Invoke"), new CodeVariableReferenceExpression("args"));
+					var handler = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "handler"), "Invoke"), new CodeVariableReferenceExpression("args"));
 					p.SetStatements.Add(handler);
 
-					CodeBinaryOperatorExpression comparison = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Handled"), CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(true));
-					CodeConditionStatement @if = new CodeConditionStatement(comparison, new CodeMethodReturnStatement());
+					var comparison = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("args"), "Handled"), CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression(true));
+					var @if = new CodeConditionStatement(comparison, new CodeMethodReturnStatement());
 
 					p.SetStatements.Add(@if);
 
@@ -284,19 +283,19 @@ namespace DevelopmentWithADot.Interception
 		{
 			if (handlerType != null)
 			{
-				CodeMemberField handlerField = new CodeMemberField();
+				var handlerField = new CodeMemberField();
 				handlerField.Attributes = MemberAttributes.FamilyOrAssembly;
 				handlerField.Name = "handler";
 				handlerField.Type = handlerTypeReference;
-				handlerField.InitExpression = handlerType != null ? new CodeObjectCreateExpression(handlerType) : null;
+				handlerField.InitExpression = (handlerType != null) ? new CodeObjectCreateExpression(handlerType) : null;
 				targetClass.Members.Add(handlerField);
 			}
 
-			CodeMemberField interceptorField = new CodeMemberField();
+			var interceptorField = new CodeMemberField();
 			interceptorField.Attributes = MemberAttributes.FamilyOrAssembly;
 			interceptorField.Name = "interceptor";
 			interceptorField.Type = interceptorTypeReference;
-			interceptorField.InitExpression = interceptorType != null ? new CodeObjectCreateExpression(interceptorType) : null;
+			interceptorField.InitExpression = (interceptorType != null) ? new CodeObjectCreateExpression(interceptorType) : null;
 			targetClass.Members.Add(interceptorField);
 		}
 
@@ -315,7 +314,7 @@ namespace DevelopmentWithADot.Interception
 				parameters.ReferencedAssemblies.Add(String.Concat(interceptorType.Assembly.GetName().Name, Path.GetExtension(interceptorType.Assembly.CodeBase)));
 			}
 
-			foreach (Type additionalInterfaceType in additionalInterfaceTypes)
+			foreach (var additionalInterfaceType in additionalInterfaceTypes)
 			{
 				parameters.ReferencedAssemblies.Add(String.Concat(additionalInterfaceType.Assembly.GetName().Name, Path.GetExtension(additionalInterfaceType.Assembly.CodeBase)));
 			}
@@ -352,26 +351,26 @@ namespace DevelopmentWithADot.Interception
 
 		public override Type Generate(Interceptor interceptor, Type baseType, Type handlerType, params Type[] additionalInterfaceTypes)
 		{
-			IEnumerable<PropertyInfo> properties = this.GetProperties(baseType, additionalInterfaceTypes);
-			IEnumerable<MethodInfo> methods = this.GetMethods(baseType, additionalInterfaceTypes);
-			IEnumerable<ConstructorInfo> constructors = this.GetConstructors(baseType);
+			var properties = this.GetProperties(baseType, additionalInterfaceTypes);
+			var methods = this.GetMethods(baseType, additionalInterfaceTypes);
+			var constructors = this.GetConstructors(baseType);
 
-			CodeTypeDeclaration targetClass = new CodeTypeDeclaration(String.Concat(baseType.Name, "_Dynamic"));
+			var targetClass = new CodeTypeDeclaration(String.Concat(baseType.Name, "_Dynamic"));
 			targetClass.IsClass = baseType.IsClass;
 			targetClass.TypeAttributes = TypeAttributes.Sealed | TypeAttributes.Serializable;
 			targetClass.BaseTypes.Add((baseType.IsInterface == false) ? baseType : typeof(Object));
 			targetClass.BaseTypes.Add(proxyTypeReference.BaseType);
 
-			foreach (Type additionalInterfaceType in additionalInterfaceTypes)
+			foreach (var additionalInterfaceType in additionalInterfaceTypes)
 			{
 				targetClass.BaseTypes.Add(additionalInterfaceType);
 			}
 
-			CodeNamespace samples = new CodeNamespace(baseType.Namespace);
+			var samples = new CodeNamespace(baseType.Namespace);
 			samples.Imports.Add(new CodeNamespaceImport(typeof(String).Namespace));
 			samples.Types.Add(targetClass);
 
-			CodeCompileUnit targetUnit = new CodeCompileUnit();
+			var targetUnit = new CodeCompileUnit();
 			targetUnit.Namespaces.Add(samples);
 
 			this.GenerateFields(targetClass, baseType, handlerType, interceptor != null ? interceptor.GetType() : null);
@@ -382,18 +381,18 @@ namespace DevelopmentWithADot.Interception
 
 			this.GenerateProperties(targetClass, baseType, properties);
 
-			StringBuilder builder = new StringBuilder();
-			
-			using (TextWriter sourceWriter = new StringWriter(builder))
+			var builder = new StringBuilder();
+
+			using (var sourceWriter = new StringWriter(builder))
 			{
 				provider.GenerateCodeFromCompileUnit(targetUnit, sourceWriter, options);
 			}
 
-			CompilerParameters parameters = new CompilerParameters() { GenerateInMemory = true };
+			var parameters = new CompilerParameters() { GenerateInMemory = true };
 
 			this.AddReferences(parameters, baseType, handlerType, interceptor != null ? interceptor.GetType() : null, additionalInterfaceTypes);
-			
-			CompilerResults results = provider.CompileAssemblyFromDom(parameters, targetUnit);
+
+			var results = provider.CompileAssemblyFromDom(parameters, targetUnit);
 
 			return (results.CompiledAssembly.GetTypes().First());
 		}

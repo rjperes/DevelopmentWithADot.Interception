@@ -10,7 +10,6 @@ namespace DevelopmentWithADot.Interception
 
 		public InterceptionRealProxy(Type classToProxy) : base(classToProxy)
 		{
-			this.interceptor = interceptor;
 		}
 
 		public override IMessage Invoke(IMessage msg)

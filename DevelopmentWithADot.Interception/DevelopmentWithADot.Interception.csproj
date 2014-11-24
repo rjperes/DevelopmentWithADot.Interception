@@ -49,6 +49,7 @@
     <Compile Include="CodeDOMInterceptedTypeGenerator.cs" />
     <Compile Include="ContextBoundObjectInterceptor.cs" />
     <Compile Include="EventInterceptionHandler.cs" />
+    <Compile Include="ICancellableInstanceInterceptor.cs" />
     <Compile Include="IInterceptor.cs" />
     <Compile Include="InstanceInterceptor.cs" />
     <Compile Include="InstanceInterceptorExtensions.cs" />
@@ -79,6 +80,7 @@
     <None Include="..\..\DevelopmentWithADot.snk">
       <Link>DevelopmentWithADot.snk</Link>
     </None>
+    <None Include="DevelopmentWithADot.Interception.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

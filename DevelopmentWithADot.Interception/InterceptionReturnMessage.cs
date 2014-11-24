@@ -6,7 +6,7 @@ using System.Runtime.Remoting.Messaging;
 
 namespace DevelopmentWithADot.Interception
 {
-	class InterceptionReturnMessage : IMethodReturnMessage
+	internal sealed class InterceptionReturnMessage : IMethodReturnMessage
 	{
 		private readonly InterceptionArgs args;
 		private readonly LogicalCallContext context;
@@ -99,7 +99,7 @@ namespace DevelopmentWithADot.Interception
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return (this.MethodBase.GetParameters().Any(p => p.GetCustomAttributes(typeof (ParamArrayAttribute), false).Any()));
 			}
 		}
 
@@ -131,7 +131,7 @@ namespace DevelopmentWithADot.Interception
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return (this.MethodBase.GetParameters().Select(x => x.ParameterType).ToArray());
 			}
 		}
 
@@ -139,7 +139,7 @@ namespace DevelopmentWithADot.Interception
 		{
 			get
 			{
-				return(this.args.Instance.GetType().FullName);
+				return (this.args.Instance.GetType().FullName);
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace DevelopmentWithADot.Interception
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return (null);
 			}
 		}
 

@@ -10,7 +10,7 @@ namespace DevelopmentWithADot.Interception
 
 		public void Invoke(InterceptionArgs arg)
 		{
-			EventHandler<InterceptionArgs> handler = this.Interception;
+			var handler = this.Interception;
 
 			if (handler != null)
 			{

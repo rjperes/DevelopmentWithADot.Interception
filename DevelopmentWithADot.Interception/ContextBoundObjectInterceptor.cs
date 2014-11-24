@@ -1,13 +1,31 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Runtime.Remoting;
+using System.Linq;
 
 namespace DevelopmentWithADot.Interception
 {
-	public sealed class ContextBoundObjectInterceptor : InstanceInterceptor
+	public sealed class ContextBoundObjectInterceptor : InstanceInterceptor, ICancellableInstanceInterceptor
 	{
-		internal static readonly IDictionary<Object, IInterceptionHandler> interceptors = new ConcurrentDictionary<Object, IInterceptionHandler>();
+		internal static readonly ConcurrentDictionary<Object, IInterceptionHandler> interceptors = new ConcurrentDictionary<Object, IInterceptionHandler>();
+
+		public static Boolean IsIntercepted(Object instance)
+		{
+			return (interceptors.Any(x => x.Key == instance));
+		}
+
+		public void StopIntercepting(Object instance)
+		{
+			var handler = null as IInterceptionHandler;
+
+			foreach (var key in interceptors.Keys)
+			{
+				if (key == instance)
+				{
+					interceptors.TryRemove(key, out handler);
+					break;
+				}
+			}
+		}
 
 		public override Object Intercept(Object instance, Type typeToIntercept, IInterceptionHandler handler)
 		{

@@ -21,23 +21,23 @@ namespace DevelopmentWithADot.Interception
 
 		public override IMessage Invoke(IMessage msg)
 		{
-			ReturnMessage responseMessage;
-			Object response = null;
-			Exception caughtException = null;
+			var responseMessage = null as ReturnMessage;
+			var response = null as Object;
+			var caughtException = null as Exception;
 
 			try
 			{
-				String methodName = msg.Properties["__MethodName"] as String;
-				Type[] parameterTypes = msg.Properties["__MethodSignature"] as Type[];
-				Object[] parameters = msg.Properties["__Args"] as Object[];
-				String typeName = msg.Properties["__TypeName"] as String;
-				MethodInfo method = this.instance.GetType().GetMethod(methodName, parameterTypes);
+				var methodName = msg.Properties["__MethodName"] as String;
+				var parameterTypes = msg.Properties["__MethodSignature"] as Type[];
+				var parameters = msg.Properties["__Args"] as Object[];
+				var typeName = msg.Properties["__TypeName"] as String;
+				var method = this.instance.GetType().GetMethod(methodName, parameterTypes);
 
 				if (method == null)
 				{
 					if (methodName.StartsWith("get_") == true)
 					{
-						PropertyInfo property = this.instance.GetType().GetProperty(methodName.Substring(4), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+						var property = this.instance.GetType().GetProperty(methodName.Substring(4), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 						if (property != null)
 						{
@@ -53,7 +53,7 @@ namespace DevelopmentWithADot.Interception
 					}
 				}
 
-				InterceptionArgs args = new InterceptionArgs(this.instance, method, parameters);
+				var args = new InterceptionArgs(this.instance, method, parameters);
 
 				this.handler.Invoke(args);
 
@@ -69,7 +69,7 @@ namespace DevelopmentWithADot.Interception
 				caughtException = ex;
 			}
 
-			IMethodCallMessage message = msg as IMethodCallMessage;
+			var message = msg as IMethodCallMessage;
 
 			if (caughtException == null)
 			{

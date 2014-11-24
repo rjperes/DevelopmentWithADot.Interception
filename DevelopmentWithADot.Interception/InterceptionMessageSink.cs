@@ -6,7 +6,7 @@ using System.Runtime.Remoting.Messaging;
 
 namespace DevelopmentWithADot.Interception
 {
-	sealed class InterceptionMessageSink : IMessageSink
+	internal sealed class InterceptionMessageSink : IMessageSink
 	{
 		private readonly Type handlerType;
 		private readonly MarshalByRefObject instance;
@@ -35,17 +35,23 @@ namespace DevelopmentWithADot.Interception
 
 		public IMessage SyncProcessMessage(IMessage msg)
 		{
-			if (!(msg is IConstructionCallMessage) && (msg is IMethodCallMessage))
+			if (ContextBoundObjectInterceptor.IsIntercepted(this.instance) == true)
 			{
-				var mcm = msg as IMethodCallMessage;
-				var args = new InterceptionArgs(this.instance, mcm.MethodBase as MethodInfo, mcm.InArgs);
-				var handler = this.GetHandler();
-
-				handler.Invoke(args);
-
-				if (args.Handled == true)
+				if (!(msg is IConstructionCallMessage) && (msg is IMethodCallMessage))
 				{
-					return (new InterceptionReturnMessage(args, this.context, this.properties));
+					var mcm = msg as IMethodCallMessage;
+					var args = new InterceptionArgs(this.instance, mcm.MethodBase as MethodInfo, mcm.InArgs);
+					var handler = this.GetHandler();
+
+					if (handler != null)
+					{
+						handler.Invoke(args);
+
+						if (args.Handled == true)
+						{
+							return (new InterceptionReturnMessage(args, this.context, this.properties));
+						}
+					}
 				}
 			}
 
@@ -58,7 +64,10 @@ namespace DevelopmentWithADot.Interception
 
 			if (ContextBoundObjectInterceptor.interceptors.TryGetValue(this.instance, out handler) == false)
 			{
-				handler = Activator.CreateInstance(this.handlerType) as IInterceptionHandler;
+				if (handlerType != null)
+				{
+					handler = Activator.CreateInstance(this.handlerType) as IInterceptionHandler;
+				}
 			}
 
 			return (handler);

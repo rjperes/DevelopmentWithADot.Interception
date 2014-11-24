@@ -20,7 +20,7 @@ namespace DevelopmentWithADot.Interception
 
 		public void Invoke(InterceptionArgs arg)
 		{
-			for (Int32 i = 0; i < this.Handlers.Count; ++i)
+			for (var i = 0; i < this.Handlers.Count; ++i)
 			{
 				this.Handlers[i].Invoke(arg);
 

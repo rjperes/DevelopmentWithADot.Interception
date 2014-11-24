@@ -5,7 +5,7 @@ using System.Runtime.Remoting.Messaging;
 
 namespace DevelopmentWithADot.Interception
 {
-	sealed class InterceptionProperty : IContextProperty, IContributeObjectSink
+	internal sealed class InterceptionProperty : IContextProperty, IContributeObjectSink
 	{
 		private readonly Type handlerType;
 		private readonly LogicalCallContext context;

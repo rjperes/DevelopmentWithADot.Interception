@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Hosting;
 
 namespace DevelopmentWithADot.Interception.Tests
 {
@@ -42,16 +39,11 @@ namespace DevelopmentWithADot.Interception.Tests
 
 		}
 
-		protected MyType(int i)
-		{
-
-		}
-
 		public virtual String MyProperty
 		{
 			get
 			{
-				return ("");
+				return (String.Empty);
 			}
 			set
 			{
