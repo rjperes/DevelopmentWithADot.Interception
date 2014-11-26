@@ -7,7 +7,7 @@ namespace DevelopmentWithADot.Interception
 {
 	public sealed class VirtualMethodInterceptor : Interceptor, ITypeInterceptor
 	{
-		private static readonly InterceptedTypeGenerator generator = new CodeDOMInterceptedTypeGenerator();
+		private static readonly TypeGenerator generator = new CodeDOMTypeGenerator();
 
 		private Type CreateType(Type typeToIntercept, Type handlerType)
 		{

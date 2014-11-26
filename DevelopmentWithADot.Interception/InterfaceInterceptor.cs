@@ -4,7 +4,7 @@ namespace DevelopmentWithADot.Interception
 {
 	public sealed class InterfaceInterceptor : InstanceInterceptor
 	{
-		private static readonly InterceptedTypeGenerator generator = new CodeDOMInterceptedTypeGenerator();
+		private static readonly TypeGenerator generator = new CodeDOMTypeGenerator();
 
 		public override Object Intercept(Object instance, Type typeToIntercept, IInterceptionHandler handler)
 		{

@@ -10,7 +10,7 @@ using Microsoft.CSharp;
 
 namespace DevelopmentWithADot.Interception
 {
-	internal class CodeDOMInterceptedTypeGenerator : InterceptedTypeGenerator
+	internal class CodeDOMTypeGenerator : TypeGenerator
 	{
 		private static readonly CodeDomProvider provider = new CSharpCodeProvider();
 		private static readonly CodeGeneratorOptions options = new CodeGeneratorOptions() { BracingStyle = "C" };

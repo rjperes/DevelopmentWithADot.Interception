@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeDOMInterceptedTypeGenerator.cs" />
+    <Compile Include="CodeDOMTypeGenerator.cs" />
     <Compile Include="ContextBoundObjectInterceptor.cs" />
     <Compile Include="EventInterceptionHandler.cs" />
     <Compile Include="ICancellableInstanceInterceptor.cs" />
@@ -71,7 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransparentProxy.cs" />
     <Compile Include="TransparentProxyInterceptor.cs" />
-    <Compile Include="InterceptedTypeGenerator.cs" />
+    <Compile Include="TypeGenerator.cs" />
     <Compile Include="ITypeInterceptor.cs" />
     <Compile Include="TypeInterceptorExtensions.cs" />
     <Compile Include="VirtualMethodInterceptor.cs" />
