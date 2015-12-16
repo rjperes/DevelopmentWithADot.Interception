@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DevelopmentWithADot.Interception.InterfaceInterceptor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>InterfaceInterceptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DevelopmentWithADot.Interception.VirtualMethodInterceptor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAQAAAAIAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>VirtualMethodInterceptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DevelopmentWithADot.Interception.TransparentProxyInterceptor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>TransparentProxyInterceptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DevelopmentWithADot.Interception.DynamicInterceptor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>DynamicInterceptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DevelopmentWithADot.Interception.ContextBoundObjectInterceptor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAIAAAAAAAAABAAAAAAAAgAAAAA=</HashCode>
+      <FileName>ContextBoundObjectInterceptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="DevelopmentWithADot.Interception.IInterceptor" Collapsed="true">
+    <Position X="1.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IInterceptor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DevelopmentWithADot.Interception.ITypeInterceptor" Collapsed="true">
+    <Position X="2.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>ITypeInterceptor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DevelopmentWithADot.Interception.IInstanceInterceptor" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>IInstanceInterceptor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DevelopmentWithADot.Interception.IInterceptionHandler" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IInterceptionHandler.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
