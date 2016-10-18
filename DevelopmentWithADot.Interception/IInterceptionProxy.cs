@@ -3,7 +3,7 @@ namespace DevelopmentWithADot.Interception
 {
 	public interface IInterceptionProxy
 	{
-		Interceptor Interceptor
+		IInterceptor Interceptor
 		{
 			get;
 		}

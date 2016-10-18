@@ -1,36 +1,26 @@
 ﻿using System;
-<<<<<<< HEAD
 
 namespace DevelopmentWithADot.Interception
 {
 	public sealed class VirtualMethodInterceptor : ITypeInterceptor
 	{
-		private static readonly InterceptedTypeGenerator generator = new CodeDOMInterceptedTypeGenerator();
-=======
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+		private readonly InterceptedTypeGenerator generator;
 
-namespace DevelopmentWithADot.Interception
-{
-	public sealed class VirtualMethodInterceptor : Interceptor, ITypeInterceptor
-	{
-		private static readonly TypeGenerator generator = new CodeDOMTypeGenerator();
->>>>>>> 59b505f23b739272092e29d693382916e938e4bb
+		public VirtualMethodInterceptor(InterceptedTypeGenerator generator)
+		{
+			this.generator = generator;
+		}
+
+		public VirtualMethodInterceptor() : this(CodeDOMInterceptedTypeGenerator.Instance)
+		{
+
+		}
 
 		private Type CreateType(Type typeToIntercept, Type handlerType)
 		{
-			return (generator.Generate(this, typeToIntercept, handlerType));
+			return (this.generator.Generate(this, typeToIntercept, handlerType));
 		}
 
-<<<<<<< HEAD
-=======
-		public override IEnumerable<MethodInfo> GetInterceptableMethods(Type type)
-		{
-			return (type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.IsAbstract == true) || (x.IsVirtual == true)));
-		}
-
->>>>>>> 59b505f23b739272092e29d693382916e938e4bb
 		public Type Intercept(Type typeToIntercept, Type handlerType)
 		{
 			if (typeToIntercept == null)
@@ -71,7 +61,7 @@ namespace DevelopmentWithADot.Interception
 			return (this.CreateType(typeToIntercept, handlerType));
 		}
 
-		public Boolean CanIntercept(Type typeToIntercept)
+		public bool CanIntercept(Type typeToIntercept)
 		{
 			return ((typeToIntercept.IsInterface == false) && (typeToIntercept.IsSealed == false));
 		}

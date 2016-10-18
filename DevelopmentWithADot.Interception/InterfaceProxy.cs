@@ -1,21 +1,12 @@
-﻿using System;
-
-namespace DevelopmentWithADot.Interception
+﻿namespace DevelopmentWithADot.Interception
 {
 	public abstract class InterfaceProxy
 	{
-		protected readonly Object instance;
-<<<<<<< HEAD
+		protected readonly object instance;
 		protected readonly IInterceptor interceptor;
 		protected readonly IInterceptionHandler handler;
 
-		protected InterfaceProxy(IInterceptor interceptor, IInterceptionHandler handler, Object instance)
-=======
-		protected readonly Interceptor interceptor;
-		protected readonly IInterceptionHandler handler;
-
-		protected InterfaceProxy(Interceptor interceptor, IInterceptionHandler handler, Object instance)
->>>>>>> 59b505f23b739272092e29d693382916e938e4bb
+		protected InterfaceProxy(IInterceptor interceptor, IInterceptionHandler handler, object instance)
 		{
 			this.instance = instance;
 			this.interceptor = interceptor;

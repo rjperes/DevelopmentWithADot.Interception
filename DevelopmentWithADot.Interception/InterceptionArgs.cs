@@ -6,9 +6,9 @@ namespace DevelopmentWithADot.Interception
 	[Serializable]
 	public sealed class InterceptionArgs : EventArgs
 	{
-		private Object result;
+		private object result;
 
-		public InterceptionArgs(Object instance, MethodInfo method, params Object [] arguments)
+		public InterceptionArgs(object instance, MethodInfo method, params object[] arguments)
 		{
 			this.Instance = instance;
 			this.Method = method;
@@ -17,21 +17,10 @@ namespace DevelopmentWithADot.Interception
 
 		public void Proceed()
 		{
-<<<<<<< HEAD
 			this.Result = this.Method.Invoke(this.Instance, this.Arguments);
-=======
-			try
-			{
-				this.Result = this.Method.Invoke(this.Instance, this.Arguments);
-			}
-			catch (Exception ex)
-			{
-				this.Exception = ex;
-			}
->>>>>>> 59b505f23b739272092e29d693382916e938e4bb
 		}
 
-		public Object Instance
+		public object Instance
 		{
 			get;
 			private set;
@@ -43,19 +32,19 @@ namespace DevelopmentWithADot.Interception
 			private set;
 		}
 
-		public Object [] Arguments
+		public object[] Arguments
 		{
 			get;
 			private set;
 		}
 
-		public Boolean Handled
+		public bool Handled
 		{
 			get;
 			set;
 		}
 
-		public Object Result
+		public object Result
 		{
 			get
 			{
@@ -67,14 +56,5 @@ namespace DevelopmentWithADot.Interception
 				this.Handled = true;
 			}
 		}
-<<<<<<< HEAD
-=======
-
-		public Exception Exception
-		{
-			get;
-			private set;
-		}
->>>>>>> 59b505f23b739272092e29d693382916e938e4bb
 	}
 }
