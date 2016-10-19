@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DevelopmentWithADot.Interception
 {
@@ -20,7 +19,7 @@ namespace DevelopmentWithADot.Interception
 
 		public void Invoke(InterceptionArgs arg)
 		{
-			for (Int32 i = 0; i < this.Handlers.Count; ++i)
+			for (var i = 0; i < this.Handlers.Count; ++i)
 			{
 				this.Handlers[i].Invoke(arg);
 

@@ -304,22 +304,22 @@ namespace DevelopmentWithADot.Interception
 
 		protected virtual void AddReferences(CompilerParameters parameters, Type baseType, Type handlerType, Type interceptorType, Type [] additionalInterfaceTypes)
 		{
-			parameters.ReferencedAssemblies.Add(String.Concat(proxyAssembly.GetName().Name, Path.GetExtension(proxyAssembly.CodeBase)));
-			parameters.ReferencedAssemblies.Add(String.Concat(baseType.Assembly.GetName().Name, Path.GetExtension(baseType.Assembly.CodeBase)));
+			parameters.ReferencedAssemblies.Add(string.Concat(proxyAssembly.GetName().Name, Path.GetExtension(proxyAssembly.CodeBase)));
+			parameters.ReferencedAssemblies.Add(string.Concat(baseType.Assembly.GetName().Name, Path.GetExtension(baseType.Assembly.CodeBase)));
 
 			if (handlerType != null)
 			{
-				parameters.ReferencedAssemblies.Add(String.Concat(handlerType.Assembly.GetName().Name, Path.GetExtension(handlerType.Assembly.CodeBase)));
+				parameters.ReferencedAssemblies.Add(string.Concat(handlerType.Assembly.GetName().Name, Path.GetExtension(handlerType.Assembly.CodeBase)));
 			}
 
 			if (interceptorType != null)
 			{
-				parameters.ReferencedAssemblies.Add(String.Concat(interceptorType.Assembly.GetName().Name, Path.GetExtension(interceptorType.Assembly.CodeBase)));
+				parameters.ReferencedAssemblies.Add(string.Concat(interceptorType.Assembly.GetName().Name, Path.GetExtension(interceptorType.Assembly.CodeBase)));
 			}
 
 			foreach (Type additionalInterfaceType in additionalInterfaceTypes)
 			{
-				parameters.ReferencedAssemblies.Add(String.Concat(additionalInterfaceType.Assembly.GetName().Name, Path.GetExtension(additionalInterfaceType.Assembly.CodeBase)));
+				parameters.ReferencedAssemblies.Add(string.Concat(additionalInterfaceType.Assembly.GetName().Name, Path.GetExtension(additionalInterfaceType.Assembly.CodeBase)));
 			}
 		}
 
@@ -358,10 +358,10 @@ namespace DevelopmentWithADot.Interception
 			var methods = this.GetMethods(baseType, additionalInterfaceTypes);
 			var constructors = this.GetConstructors(baseType);
 
-			var targetClass = new CodeTypeDeclaration(String.Concat(baseType.Name, "_Dynamic"));
+			var targetClass = new CodeTypeDeclaration(string.Concat(baseType.Name, "_Dynamic"));
 			targetClass.IsClass = baseType.IsClass;
 			targetClass.TypeAttributes = TypeAttributes.Sealed | TypeAttributes.Serializable;
-			targetClass.BaseTypes.Add((baseType.IsInterface == false) ? baseType : typeof(Object));
+			targetClass.BaseTypes.Add((baseType.IsInterface == false) ? baseType : typeof(object));
 			targetClass.BaseTypes.Add(proxyTypeReference.BaseType);
 
 			foreach (var additionalInterfaceType in additionalInterfaceTypes)
@@ -370,7 +370,7 @@ namespace DevelopmentWithADot.Interception
 			}
 
 			var samples = new CodeNamespace(baseType.Namespace);
-			samples.Imports.Add(new CodeNamespaceImport(typeof(String).Namespace));
+			samples.Imports.Add(new CodeNamespaceImport(typeof(string).Namespace));
 			samples.Types.Add(targetClass);
 
 			var targetUnit = new CodeCompileUnit();
@@ -396,6 +396,11 @@ namespace DevelopmentWithADot.Interception
 			this.AddReferences(parameters, baseType, handlerType, interceptor != null ? interceptor.GetType() : null, additionalInterfaceTypes);
 
 			var results = provider.CompileAssemblyFromDom(parameters, targetUnit);
+
+			if (results.Errors.HasErrors == true)
+			{
+				throw new InvalidOperationException(string.Join(Environment.NewLine,  results.Errors.OfType<object>()));
+			}
 
 			return (results.CompiledAssembly.GetTypes().First());
 		}

@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Runtime.Remoting.Activation;
 using System.Runtime.Remoting.Contexts;
 
 namespace DevelopmentWithADot.Interception
 {
-	using System.Runtime.Remoting.Activation;
-
 	[Serializable]
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public sealed class InterceptionContextAttribute : ContextAttribute
@@ -21,13 +20,13 @@ namespace DevelopmentWithADot.Interception
 
 		public override bool IsContextOK(Context ctx, IConstructionCallMessage ctorMsg)
 		{
-			var p = ctx.GetProperty("Interception") as InterceptionProperty;
+			var p = ctx.GetProperty(InterceptionProperty.InterceptionPropertyName) as InterceptionProperty;
 			return (p != null);
 		}
 
 		public override bool IsNewContextOK(Context newCtx)
 		{
-			var p = newCtx.GetProperty("Interception") as InterceptionProperty;
+			var p = newCtx.GetProperty(InterceptionProperty.InterceptionPropertyName) as InterceptionProperty;
 			return (p != null);
 		}
 	}

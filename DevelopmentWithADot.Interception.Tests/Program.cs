@@ -1,16 +1,17 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 
 namespace DevelopmentWithADot.Interception.Tests
 {
 	abstract class BaseContextBoundObject : ContextBoundObject, IMyType
 	{
-		public abstract Int32 MyMethod();
+		public abstract int MyMethod();
 
-		public abstract String MyProperty { get; set; }
+		public abstract string MyProperty { get; set; }
 	}
 
 	//[InterceptionProxy]
-	class Sample1 : BaseContextBoundObject
+	/*class Sample1 : BaseContextBoundObject
 	{
 		public override Int32 MyMethod()
 		{
@@ -27,52 +28,33 @@ namespace DevelopmentWithADot.Interception.Tests
 			{
 			}
 		}
-	}
+	}*/
 
 	[InterceptionContext]
-	class Sample2 : BaseContextBoundObject
+	class MyType2 : BaseContextBoundObject
 	{
-		public override Int32 MyMethod()
+		public override int MyMethod()
 		{
 			return (0);
 		}
 
-		public override String MyProperty
-		{
-			get
-			{
-				return ("");
-			}
-			set
-			{
-			}
-		}
+		public override String MyProperty { get; set; }
 	}
 
 	public interface IMyType
 	{
-		Int32 MyMethod();
+		int MyMethod();
 
-		String MyProperty { get; set; }
+		string MyProperty { get; set; }
 	}
 
 	public class MyType : MarshalByRefObject, IMyType
 	{
-		public virtual String MyProperty
-		{
-			get
-			{
-				return ("");
-			}
-			set
-			{
+		public virtual string MyProperty { get; set; }
 
-			}
-		}
-
-		public virtual Int32 MyMethod()
+		public virtual int MyMethod()
 		{
-			return (10);
+			return (0);
 		}
 	}
 
@@ -86,53 +68,76 @@ namespace DevelopmentWithADot.Interception.Tests
 
 	static class Program
 	{
+		static void DynamicInterceptor(object instance)
+		{
+			//Dynamic interceptor
+			var interceptor = new DynamicInterceptor();
+			var canIntercept = interceptor.CanIntercept(instance);
+			dynamic myProxy = interceptor.Intercept(instance, null, new MyHandler());
+			var proxy = myProxy as IInterceptionProxy;
+			var otherInterceptor = proxy.Interceptor;
+			int result = myProxy.MyMethod();
+			Assert.AreEqual(20, result);
+		}
+
+		static void ContextBoundObjectInterceptor(ContextBoundObject instance)
+		{
+			//Context bound object interceptor
+			var interceptor = new ContextBoundObjectInterceptor();
+			var canIntercept = interceptor.CanIntercept(instance);
+			var myProxy = interceptor.Intercept(instance, new MyHandler());
+			//var proxy = myProxy as IInterceptionProxy;
+			//var otherInterceptor = proxy.Interceptor;
+			var result = (myProxy as IMyType).MyMethod();
+			Assert.AreEqual(20, result);
+		}
+
+		static void InterfaceInterceptor(object instance)
+		{
+			//Interface interceptor
+			var interceptor = new InterfaceInterceptor();
+			var canIntercept = interceptor.CanIntercept(instance);
+			var myProxy = interceptor.Intercept(instance, typeof(IMyType), new MyHandler()) as IMyType;
+			var proxy = myProxy as IInterceptionProxy;
+			var otherInterceptor = proxy.Interceptor;
+			var result = myProxy.MyMethod();
+			Assert.AreEqual(20, result);
+		}
+
+		static void VirtualMethodInterceptor(Type type)
+		{
+			//Virtual method interceptor
+			var interceptor = new VirtualMethodInterceptor();
+			var canIntercept = interceptor.CanIntercept(type);
+			var myProxyType = interceptor.Intercept(type, typeof(MyHandler));
+			//var myProxyType = interceptor.Intercept<MyType, MyHandler>();
+			//var myProxyType = interceptor.Intercept<MyType, MyHandler>();
+			var myProxy = Activator.CreateInstance(myProxyType) as IMyType;
+			var proxy = myProxy as IInterceptionProxy;
+			var otherInterceptor = proxy.Interceptor;
+			var result = myProxy.MyMethod();
+			Assert.AreEqual(20, result);
+		}
+
+		static void TransparentProxyInterceptor(MarshalByRefObject instance)
+		{
+			//Transparent proxy interceptor
+			var interceptor = new TransparentProxyInterceptor();
+			var canIntercept = interceptor.CanIntercept(instance);
+			var myProxy = interceptor.Intercept(instance, typeof(IMyType), new MyHandler()) as IMyType;
+			var proxy = myProxy as IInterceptionProxy;
+			var otherInterceptor = proxy.Interceptor;
+			var result = myProxy.MyMethod();
+			Assert.AreEqual(20, result);
+		}
+
 		static void Main()
 		{
-			{
-				var interceptor = new DynamicInterceptor();
-				var myInstance = new MyType();
-				dynamic myProxy = interceptor.Intercept(myInstance, null, new MyHandler());
-				var proxy = myProxy as IInterceptionProxy;
-				var otherInterceptor = proxy.Interceptor;
-				Int32 result = myProxy.MyMethod();
-			}
-
-			{
-				var interceptor = new ContextBoundObjectInterceptor();
-				var myInstance = new Sample2();
-				var myProxy = myInstance = interceptor.Intercept(myInstance, new MyHandler());
-				//var proxy = myProxy as IInterceptionProxy;
-				//var otherInterceptor = proxy.Interceptor;
-				var result = myProxy.MyMethod();
-			}
-
-			{
-				var interceptor = new InterfaceInterceptor();
-				var myInstance = new MyType();
-				var myProxy = interceptor.Intercept(myInstance, typeof(IMyType), new MyHandler()) as IMyType;
-				var proxy = myProxy as IInterceptionProxy;
-				var otherInterceptor = proxy.Interceptor;
-				var result = myProxy.MyMethod();
-			}
-
-			{
-				var interceptor = new VirtualMethodInterceptor();
-				var myProxyType = interceptor.Intercept(typeof(MyType), typeof(MyHandler));
-				//var myProxyType = interceptor.Intercept<MyType, MyHandler>();
-				var myProxy = Activator.CreateInstance(myProxyType) as IMyType;
-				var proxy = myProxy as IInterceptionProxy;
-				var otherInterceptor = proxy.Interceptor;
-				var result = myProxy.MyMethod();
-			}
-
-			{
-				var interceptor = new TransparentProxyInterceptor();
-				var myInstance = new MyType();
-				var myProxy = interceptor.Intercept(myInstance, new MyHandler()) as IMyType;
-				var proxy = myProxy as IInterceptionProxy;
-				var otherInterceptor = proxy.Interceptor;
-				var result = myProxy.MyMethod();
-			}
+			DynamicInterceptor(new MyType());
+			ContextBoundObjectInterceptor(new MyType2());
+			InterfaceInterceptor(new MyType());
+			VirtualMethodInterceptor(typeof(MyType));
+			TransparentProxyInterceptor(new MyType());
 		}
 	}
 }

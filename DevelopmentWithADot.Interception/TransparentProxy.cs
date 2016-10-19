@@ -27,10 +27,10 @@ namespace DevelopmentWithADot.Interception
 
 			try
 			{
-				var methodName = msg.Properties["__MethodName"] as String;
+				var methodName = msg.Properties["__MethodName"] as string;
 				var parameterTypes = msg.Properties["__MethodSignature"] as Type[];
-				var parameters = msg.Properties["__Args"] as Object[];
-				var typeName = msg.Properties["__TypeName"] as String;
+				var parameters = msg.Properties["__Args"] as object[];
+				var typeName = msg.Properties["__TypeName"] as string;
 				var method = this.instance.GetType().GetMethod(methodName, parameterTypes);
 
 				if (method == null)
