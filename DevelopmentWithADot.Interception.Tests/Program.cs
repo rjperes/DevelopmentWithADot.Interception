@@ -150,9 +150,8 @@ namespace DevelopmentWithADot.Interception.Tests
 		static void DynamicInterceptorWithRegistry(object instance)
 		{
 			var interceptor = new DynamicInterceptor();
-			//var registry = new RegistryInterceptionHandler();
-			//registry.Register<IMyType>(x => x.MyMethod(), new MyHandler());
-			var registry = new E
+			var registry = new RegistryInterceptionHandler();
+			registry.Register<IMyType>(x => x.MyMethod(), new MyHandler());
 			dynamic myProxy = interceptor.Intercept(instance, null, registry);
 			myProxy.MyMethod();
 		}
