@@ -36,6 +36,11 @@ namespace DevelopmentWithADot.Interception
 			return this;
 		}
 
+		public RegistryInterceptionHandler RegisterWhen<T>(Expression<Func<T, object>> method, Func<InterceptionArgs, bool> condition, IInterceptionHandler handler)
+		{
+			return this.Register<T>(method, new ConditionalInterceptionHandler(condition, handler));
+		}
+
 		public RegistryInterceptionHandler Register<T>(Expression<Func<T, object>> method, IInterceptionHandler handler)
 		{
 			if (!(method.Body is MethodCallExpression))

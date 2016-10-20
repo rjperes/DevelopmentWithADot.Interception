@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AttributesInterceptionHandler.cs" />
     <Compile Include="CodeDOMInterceptedTypeGenerator.cs" />
+    <Compile Include="ConditionalInterceptionHandler.cs" />
     <Compile Include="ContextBoundObjectInterceptor.cs" />
     <Compile Include="DynamicInterceptor.cs" />
     <Compile Include="DynamicProxy.cs" />

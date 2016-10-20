@@ -58,6 +58,17 @@ namespace DevelopmentWithADot.Interception.Tests
 		}
 	}
 
+	public class MyType3 : IMyType
+	{
+		public virtual string MyProperty { get; set; }
+
+		[ConsoleLogInterception]
+		public virtual int MyMethod()
+		{
+			return (0);
+		}
+	}
+
 	public class MyHandler : IInterceptionHandler
 	{
 		public void Invoke(InterceptionArgs arg)
@@ -111,7 +122,6 @@ namespace DevelopmentWithADot.Interception.Tests
 			var canIntercept = interceptor.CanIntercept(type);
 			var myProxyType = interceptor.Intercept(type, typeof(MyHandler));
 			//var myProxyType = interceptor.Intercept<MyType, MyHandler>();
-			//var myProxyType = interceptor.Intercept<MyType, MyHandler>();
 			var myProxy = Activator.CreateInstance(myProxyType) as IMyType;
 			var proxy = myProxy as IInterceptionProxy;
 			var otherInterceptor = proxy.Interceptor;
@@ -131,6 +141,22 @@ namespace DevelopmentWithADot.Interception.Tests
 			Assert.AreEqual(20, result);
 		}
 
+		static void DynamicInterceptorWithAttributes(object instance)
+		{
+			dynamic myProxy = DevelopmentWithADot.Interception.DynamicInterceptor.Instance.InterceptWithAttributes(instance);
+			myProxy.MyMethod();
+		}
+
+		static void DynamicInterceptorWithRegistry(object instance)
+		{
+			var interceptor = new DynamicInterceptor();
+			//var registry = new RegistryInterceptionHandler();
+			//registry.Register<IMyType>(x => x.MyMethod(), new MyHandler());
+			var registry = new E
+			dynamic myProxy = interceptor.Intercept(instance, null, registry);
+			myProxy.MyMethod();
+		}
+
 		static void Main()
 		{
 			DynamicInterceptor(new MyType());
@@ -138,6 +164,9 @@ namespace DevelopmentWithADot.Interception.Tests
 			InterfaceInterceptor(new MyType());
 			VirtualMethodInterceptor(typeof(MyType));
 			TransparentProxyInterceptor(new MyType());
+
+			DynamicInterceptorWithAttributes(new MyType3());
+			DynamicInterceptorWithRegistry(new MyType3());
 		}
 	}
 }
