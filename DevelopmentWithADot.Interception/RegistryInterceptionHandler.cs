@@ -41,24 +41,31 @@ namespace DevelopmentWithADot.Interception
 			return this.Register<T>(method, new ConditionalInterceptionHandler(condition, handler));
 		}
 
-		public RegistryInterceptionHandler Register<T>(Expression<Func<T, object>> method, IInterceptionHandler handler)
+		private RegistryInterceptionHandler RegisterExpressionMethod(Expression expression, IInterceptionHandler handler)
 		{
-			if (!(method.Body is MethodCallExpression))
+			if (expression is MethodCallExpression)
 			{
-				throw new ArgumentException("Expression is not a method call", "method");
+				return this.Register((expression as MethodCallExpression).Method, handler);
+			}
+			else if (expression is UnaryExpression)
+			{
+				if ((expression as UnaryExpression).Operand is MethodCallExpression)
+				{
+					return this.Register(((expression as UnaryExpression).Operand as MethodCallExpression).Method, handler);
+				}
 			}
 
-			return this.Register((method.Body as MethodCallExpression).Method, handler);
+			throw new ArgumentException("Expression is not a method call", "method");
+		}
+
+		public RegistryInterceptionHandler Register<T>(Expression<Func<T, object>> method, IInterceptionHandler handler)
+		{
+			return this.RegisterExpressionMethod(method.Body, handler);
 		}
 
 		public RegistryInterceptionHandler Register<T>(Expression<Action<T>> method, IInterceptionHandler handler)
 		{
-			if (!(method.Body is MethodCallExpression))
-			{
-				throw new ArgumentException("Expression is not a method call", "method");
-			}
-
-			return this.Register((method.Body as MethodCallExpression).Method, handler);
+			return this.RegisterExpressionMethod(method.Body, handler);
 		}
 
 		public void Invoke(InterceptionArgs arg)

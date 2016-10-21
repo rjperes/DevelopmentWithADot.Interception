@@ -96,10 +96,10 @@ namespace DevelopmentWithADot.Interception.Tests
 			//Context bound object interceptor
 			var interceptor = new ContextBoundObjectInterceptor();
 			var canIntercept = interceptor.CanIntercept(instance);
-			var myProxy = interceptor.Intercept(instance, new MyHandler());
+			var myProxy = interceptor.Intercept(instance, new MyHandler()) as IMyType;
 			//var proxy = myProxy as IInterceptionProxy;
 			//var otherInterceptor = proxy.Interceptor;
-			var result = (myProxy as IMyType).MyMethod();
+			var result = myProxy.MyMethod();
 			Assert.AreEqual(20, result);
 		}
 

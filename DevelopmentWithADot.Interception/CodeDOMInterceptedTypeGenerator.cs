@@ -60,7 +60,7 @@ namespace DevelopmentWithADot.Interception
 					}
 				}
 
-				foreach (ParameterInfo p in constructor.GetParameters())
+				foreach (var p in constructor.GetParameters())
 				{
 					c.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression(p.Name));
 				}
@@ -180,7 +180,7 @@ namespace DevelopmentWithADot.Interception
 			interceptorProperty.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "interceptor")));
 			targetClass.Members.Add(interceptorProperty);
 
-			foreach (PropertyInfo property in properties)
+			foreach (var property in properties)
 			{
 				var p = new CodeMemberProperty();
 				p.Name = property.Name;
@@ -290,7 +290,7 @@ namespace DevelopmentWithADot.Interception
 				handlerField.Attributes = MemberAttributes.FamilyOrAssembly;
 				handlerField.Name = "handler";
 				handlerField.Type = handlerTypeReference;
-				handlerField.InitExpression = handlerType != null ? new CodeObjectCreateExpression(handlerType) : null;
+				handlerField.InitExpression = (handlerType != null) ? new CodeObjectCreateExpression(handlerType) : null;
 				targetClass.Members.Add(handlerField);
 			}
 
@@ -298,7 +298,7 @@ namespace DevelopmentWithADot.Interception
 			interceptorField.Attributes = MemberAttributes.FamilyOrAssembly;
 			interceptorField.Name = "interceptor";
 			interceptorField.Type = interceptorTypeReference;
-			interceptorField.InitExpression = interceptorType != null ? new CodeObjectCreateExpression(interceptorType) : null;
+			interceptorField.InitExpression = (interceptorType != null) ? new CodeObjectCreateExpression(interceptorType) : null;
 			targetClass.Members.Add(interceptorField);
 		}
 
@@ -317,7 +317,7 @@ namespace DevelopmentWithADot.Interception
 				parameters.ReferencedAssemblies.Add(string.Concat(interceptorType.Assembly.GetName().Name, Path.GetExtension(interceptorType.Assembly.CodeBase)));
 			}
 
-			foreach (Type additionalInterfaceType in additionalInterfaceTypes)
+			foreach (var additionalInterfaceType in additionalInterfaceTypes)
 			{
 				parameters.ReferencedAssemblies.Add(string.Concat(additionalInterfaceType.Assembly.GetName().Name, Path.GetExtension(additionalInterfaceType.Assembly.CodeBase)));
 			}
@@ -376,7 +376,7 @@ namespace DevelopmentWithADot.Interception
 			var targetUnit = new CodeCompileUnit();
 			targetUnit.Namespaces.Add(samples);
 
-			this.GenerateFields(targetClass, baseType, handlerType, interceptor != null ? interceptor.GetType() : null);
+			this.GenerateFields(targetClass, baseType, handlerType, (interceptor != null) ? interceptor.GetType() : null);
 
 			this.GenerateConstructors(targetClass, baseType, constructors);
 
@@ -393,13 +393,13 @@ namespace DevelopmentWithADot.Interception
 
 			var parameters = new CompilerParameters() { GenerateInMemory = true };
 
-			this.AddReferences(parameters, baseType, handlerType, interceptor != null ? interceptor.GetType() : null, additionalInterfaceTypes);
+			this.AddReferences(parameters, baseType, handlerType, (interceptor != null) ? interceptor.GetType() : null, additionalInterfaceTypes);
 
 			var results = provider.CompileAssemblyFromDom(parameters, targetUnit);
 
 			if (results.Errors.HasErrors == true)
 			{
-				throw new InvalidOperationException(string.Join(Environment.NewLine,  results.Errors.OfType<object>()));
+				throw new InvalidOperationException(string.Join(Environment.NewLine, results.Errors.OfType<object>()));
 			}
 
 			return (results.CompiledAssembly.GetTypes().First());
