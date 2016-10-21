@@ -96,7 +96,7 @@ namespace DevelopmentWithADot.Interception.Tests
 			//Context bound object interceptor
 			var interceptor = new ContextBoundObjectInterceptor();
 			var canIntercept = interceptor.CanIntercept(instance);
-			var myProxy = interceptor.Intercept(instance, new MyHandler()) as IMyType;
+			var myProxy = interceptor.Intercept(instance, null, new MyHandler()) as IMyType;
 			//var proxy = myProxy as IInterceptionProxy;
 			//var otherInterceptor = proxy.Interceptor;
 			var result = myProxy.MyMethod();
@@ -121,7 +121,6 @@ namespace DevelopmentWithADot.Interception.Tests
 			var interceptor = new VirtualMethodInterceptor();
 			var canIntercept = interceptor.CanIntercept(type);
 			var myProxyType = interceptor.Intercept(type, typeof(MyHandler));
-			//var myProxyType = interceptor.Intercept<MyType, MyHandler>();
 			var myProxy = Activator.CreateInstance(myProxyType) as IMyType;
 			var proxy = myProxy as IInterceptionProxy;
 			var otherInterceptor = proxy.Interceptor;
