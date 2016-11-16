@@ -48,7 +48,7 @@ namespace DevelopmentWithADot.Interception.Tests
 		string MyProperty { get; set; }
 	}
 
-	public class MyType : MarshalByRefObject, IMyType
+	public class MyType : /*MarshalByRefObject,*/ IMyType
 	{
 		public virtual string MyProperty { get; set; }
 
@@ -73,6 +73,9 @@ namespace DevelopmentWithADot.Interception.Tests
 	{
 		public void Invoke(InterceptionArgs arg)
 		{
+			//call base implementation
+			arg.Proceed();
+			//then change the result
 			arg.Result = 20;
 		}
 	}
@@ -128,7 +131,7 @@ namespace DevelopmentWithADot.Interception.Tests
 			Assert.AreEqual(20, result);
 		}
 
-		static void TransparentProxyInterceptor(MarshalByRefObject instance)
+		static void TransparentProxyInterceptor(object instance)
 		{
 			//Transparent proxy interceptor
 			var interceptor = new TransparentProxyInterceptor();
@@ -150,6 +153,7 @@ namespace DevelopmentWithADot.Interception.Tests
 		{
 			var interceptor = new DynamicInterceptor();
 			var registry = new RegistryInterceptionHandler();
+			registry.Register<IMyType>(x => x.MyProperty, new MyHandler());
 			registry.Register<IMyType>(x => x.MyMethod(), new MyHandler());
 			dynamic myProxy = interceptor.Intercept(instance, null, registry);
 			myProxy.MyMethod();
@@ -160,7 +164,7 @@ namespace DevelopmentWithADot.Interception.Tests
 			DynamicInterceptor(new MyType());
 			ContextBoundObjectInterceptor(new MyType2());
 			InterfaceInterceptor(new MyType());
-			VirtualMethodInterceptor(typeof(MyType));
+			//VirtualMethodInterceptor(typeof(MyType));
 			TransparentProxyInterceptor(new MyType());
 
 			DynamicInterceptorWithAttributes(new MyType3());
