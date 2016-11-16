@@ -1,5 +1,0 @@
-C:\Users\rperes\OneDrive\Projects\Development With A Dot\DevelopmentWithADot.Interception\DevelopmentWithADot.Interception\bin\Debug\DevelopmentWithADot.Interception.dll
-C:\Users\rperes\OneDrive\Projects\Development With A Dot\DevelopmentWithADot.Interception\DevelopmentWithADot.Interception\bin\Debug\DevelopmentWithADot.Interception.pdb
-C:\Users\rperes\OneDrive\Projects\Development With A Dot\DevelopmentWithADot.Interception\DevelopmentWithADot.Interception\obj\Debug\DevelopmentWithADot.Interception.csprojResolveAssemblyReference.cache
-C:\Users\rperes\OneDrive\Projects\Development With A Dot\DevelopmentWithADot.Interception\DevelopmentWithADot.Interception\obj\Debug\DevelopmentWithADot.Interception.dll
-C:\Users\rperes\OneDrive\Projects\Development With A Dot\DevelopmentWithADot.Interception\DevelopmentWithADot.Interception\obj\Debug\DevelopmentWithADot.Interception.pdb
