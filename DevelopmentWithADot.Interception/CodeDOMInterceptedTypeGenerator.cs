@@ -123,7 +123,15 @@ namespace DevelopmentWithADot.Interception
 						m.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					}
 
-					var ps = new CodeExpression[] { new CodeThisReferenceExpression(), new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod"))) }.Concat(method.GetParameters().Select(x => new CodeVariableReferenceExpression(x.Name))).ToArray();
+					var currentMethod = new CodeVariableDeclarationStatement(typeof(MethodInfo), "currentMethod", new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod"))));
+					var getType = new CodeMethodInvokeExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "instance"), "GetType");
+					var getMethod = new CodeMethodInvokeExpression(getType, "GetMethod", new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("currentMethod"), "Name"));
+					var originalMethod = new CodeVariableDeclarationStatement(typeof(MethodInfo), "originalMethod", getMethod);
+
+					m.Statements.Add(currentMethod);
+					m.Statements.Add(originalMethod);
+
+					var ps = new CodeExpression[] { new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "instance"), new CodeVariableReferenceExpression("originalMethod") }.Concat(method.GetParameters().Select(x => new CodeVariableReferenceExpression(x.Name))).ToArray();
 					var arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
 
 					m.Statements.Add(arg);
@@ -176,6 +184,7 @@ namespace DevelopmentWithADot.Interception
 			var interceptorProperty = new CodeMemberProperty();
 			interceptorProperty.Name = "Interceptor";
 			interceptorProperty.Type = interceptorTypeReference;
+			interceptorProperty.Attributes |= MemberAttributes.Private;
 			interceptorProperty.PrivateImplementationType = proxyTypeReference;
 			interceptorProperty.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "interceptor")));
 			targetClass.Members.Add(interceptorProperty);
@@ -219,12 +228,15 @@ namespace DevelopmentWithADot.Interception
 						p.Attributes = MemberAttributes.Public | MemberAttributes.Final;
 					}
 
-					var ps = new CodeExpression[]
-					{
-						new CodeThisReferenceExpression(),
-						new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod")))
-					};
+					var currentMethod = new CodeVariableDeclarationStatement(typeof(MethodInfo), "currentMethod", new CodeCastExpression(typeof(MethodInfo), new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(MethodBase)), "GetCurrentMethod"))));
+					var getType = new CodeMethodInvokeExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "instance"), "GetType");
+					var getMethod = new CodeMethodInvokeExpression(getType, "GetMethod", new CodePropertyReferenceExpression(new CodeVariableReferenceExpression("currentMethod"), "Name"));
+					var originalMethod = new CodeVariableDeclarationStatement(typeof(MethodInfo), "originalMethod", getMethod);
 
+					p.GetStatements.Add(currentMethod);
+					p.GetStatements.Add(originalMethod);
+
+					var ps = new CodeExpression[] { new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "instance"), new CodeVariableReferenceExpression("originalMethod") };
 					var arg = new CodeVariableDeclarationStatement(typeof(InterceptionArgs), "args", new CodeObjectCreateExpression(typeof(InterceptionArgs), ps));
 
 					p.GetStatements.Add(arg);

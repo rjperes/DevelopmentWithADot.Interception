@@ -54,6 +54,15 @@ namespace DevelopmentWithADot.Interception
 					return this.Register(((expression as UnaryExpression).Operand as MethodCallExpression).Method, handler);
 				}
 			}
+			else if (expression is MemberExpression)
+			{
+				if ((expression as MemberExpression).Member is PropertyInfo)
+				{
+					return this
+						.Register(((expression as MemberExpression).Member as PropertyInfo).GetMethod, handler)
+						.Register(((expression as MemberExpression).Member as PropertyInfo).SetMethod, handler);
+				}
+			}
 
 			throw new ArgumentException("Expression is not a method call", "method");
 		}

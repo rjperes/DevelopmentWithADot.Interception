@@ -5,6 +5,8 @@ namespace DevelopmentWithADot.Interception
 {
 	public sealed class ContextBoundObjectInterceptor : IInstanceInterceptor
 	{
+		public static readonly IInstanceInterceptor Instance = new ContextBoundObjectInterceptor();
+
 		internal static readonly ConcurrentDictionary<ContextBoundObject, IInterceptionHandler> interceptors = new ConcurrentDictionary<ContextBoundObject, IInterceptionHandler>();
 
 		public object Intercept(object instance, Type typeToIntercept, IInterceptionHandler handler)
